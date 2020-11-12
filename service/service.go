@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/luccas-eng/tweetstorm_v2/model"
+	"github.com/luccas-eng/http-req-tweetstorm/model"
 	"github.com/spf13/cast"
 )
 

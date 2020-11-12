@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/luccas-eng/tweetstorm_v2/service"
+	"github.com/luccas-eng/http-req-tweetstorm/service"
 )
 
 func main() {
