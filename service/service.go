@@ -31,6 +31,41 @@ func NewService(ctx context.Context) *Service {
 	}
 }
 
+//StartPrint ...
+func (s *Service) StartPrint(ctx context.Context) error {
+
+	var (
+		token, data string
+		tweets      []string
+		err         error
+	)
+
+	token, err = s.RefreshToken(ctx)
+	if err != nil {
+		return fmt.Errorf("s.RefreshToken(): %w", err)
+	}
+
+	data, err = s.GetData(ctx, token)
+	if err != nil {
+		return fmt.Errorf("s.GetData(): %w", err)
+	}
+
+	tweets, err = s.GenerateTweets(data)
+	if err != nil {
+		return fmt.Errorf("GenerateTweets(): %w", err)
+	}
+
+	if len(tweets) > 0 {
+		for _, tweet := range tweets {
+			fmt.Println(tweet)
+		}
+	} else {
+		return fmt.Errorf("something wrong")
+	}
+
+	return nil
+}
+
 //GetData ...
 func (s *Service) GetData(ctx context.Context, token string) (texto string, err error) {
 
@@ -39,9 +74,7 @@ func (s *Service) GetData(ctx context.Context, token string) (texto string, err 
 		return "", fmt.Errorf("http.Get(): %w", err)
 	}
 
-	bearer := "Bearer " + token
-
-	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Authorization", "Bearer "+token)
 	client := http.Client{
 		Timeout: 60 * time.Second,
 	}
@@ -182,14 +215,10 @@ func (s *Service) MapInput(inputLenght int) (tweetSize int, maxIndexSize int) {
 	return tweetSize, maxIndexSize
 }
 
-//PrintTweets print tweets on a tweet slice, from the last to the first part
-func (s *Service) PrintTweets(tweets []string) {
-	for _, tweet := range tweets {
-		fmt.Println(tweet)
-	}
-}
-
 //Instructions ...
 func (s *Service) Instructions() {
-	fmt.Println("Use the app by executing the program followed by your input text --> go run main.go \"the text\"")
+	colorYellow := "\033[33m"
+	colorReset := "\033[0m"
+	fmt.Println("First you build the project ---> \"docker build -t zuldigital/engineer-exam .\"")
+	fmt.Println(string(colorYellow), "Then you run the project -------> \"docker run --rm zuldigital/engineer-exam\"", string(colorReset))
 }
